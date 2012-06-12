@@ -13,6 +13,9 @@ requires = [
     'pyramid_debugtoolbar',
     'ZODB3',
     'waitress',
+    'repoze.folder',
+    'colander',
+    'deform',
     ]
 
 setup(name='openmember',
