@@ -3,8 +3,6 @@ import unittest
 from pyramid import testing
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
-from zope.interface import Interface
-from zope.interface import implements
 
 from openmember.models.interfaces import IFieldAdapter
 

@@ -2,6 +2,10 @@ from zope.interface import Attribute
 from zope.interface import Interface
 
 
+class IMemberDatabase(Interface):
+    """ """
+
+
 class IContentTemplate(Interface):
     """ Content type information """
     title = Attribute("Title of this content type")
