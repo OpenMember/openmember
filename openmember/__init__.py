@@ -7,6 +7,7 @@ def main(global_config, **settings):
     """
     config = Configurator(root_factory=root_factory, settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.include(register_fields)
     config.scan()
     return config.make_wsgi_app()
 
@@ -22,3 +23,6 @@ def appmaker(zodb_root):
         import transaction
         transaction.commit()
     return zodb_root['app_root']
+
+def register_fields(config):
+    config.include('openmember.models.fields.string_field')
