@@ -31,3 +31,14 @@ class ContentTemplate(Folder):
             schema.add(self[fieldname].get_node(context, request, **kw))
         schema.bind(context = context, request = request, **kw)
         return schema
+
+    def member_data_factory(self, values):
+        #XXX This is an example
+        #FIXME: Add factories later on
+        from openmember.models.member_data import MemberData
+        #FIXME: Soft validation goes here, i.e check if data contains errors or problems, but don't die on errors
+        #Check that fields actually exist
+        for k in values:
+            if k not in self:
+                raise KeyError("There's no field with name '%s' in %s" % (k, self))
+        return MemberData(values)

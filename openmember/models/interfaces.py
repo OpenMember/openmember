@@ -6,6 +6,25 @@ class IMemberDatabase(Interface):
     """ """
 
 
+class IMemberData(Interface):
+    """ Contains data on a specific member.
+        Created from a ContentTemplate.
+    """
+
+    content_type = Attribute("Which content type this data is based on. Must be equal to an existing ContentTemplate name")
+
+    def get(key, default = None):
+        """  """
+
+    def set(key, value):
+        """ """
+
+    def update(values):
+        """ Set several values at once. Usually a returned appstruct dict that comes from deform.
+            Must be in dict format and each key must correspond to an actual field.
+        """
+
+
 class IContentTemplate(Interface):
     """ Content type information """
     title = Attribute("Title of this content type")
@@ -15,6 +34,10 @@ class IContentTemplate(Interface):
     def get_schema(context, request, **kw):
         """ Return an instanciated schema with context and request + any kw bound. """
 
+    def member_data_factory(values):
+        """ Return a member data object. Values must be a dict, where each key is a corresponding existing field.
+            FIXME: This is where we'll preform the "soft" validation later on, to mark things as problematic. If this is the right way to go that is :)
+        """
 
 class IFieldTemplate(Interface):
     """ Contains information on a field type. """
