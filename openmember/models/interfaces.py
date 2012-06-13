@@ -6,11 +6,16 @@ class IMemberDatabase(Interface):
     """ """
 
 
+class IMembershipTerm(Interface):
+    """ """
+    start_date = Attribute("Start date")
+    end_date = Attribute("Start date")
+
+
 class IMemberData(Interface):
     """ Contains data on a specific member.
         Created from a ContentTemplate.
     """
-
     content_type = Attribute("Which content type this data is based on. Must be equal to an existing ContentTemplate name")
 
     def get(key, default = None):
