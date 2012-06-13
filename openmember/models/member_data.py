@@ -12,7 +12,7 @@ class MemberData(Folder):
         self.content_type = content_type
         super(MemberData, self).__init__()
         self._storage = OOBTree()
-        if data:
+        if values:
             self.update(values)
 
     def get(self, key, default = None):
