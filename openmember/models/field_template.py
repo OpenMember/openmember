@@ -12,6 +12,7 @@ class FieldTemplate(Folder):
 
     def __init__(self):
         self._storage = OOBTree()
+        super(FieldTemplate, self).__init__()
 
     def get_title(self):
         return self._storage.get('title', '')
