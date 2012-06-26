@@ -1,5 +1,10 @@
+from repoze.folder.interfaces import IFolder
 from zope.interface import Attribute
 from zope.interface import Interface
+
+
+class ISite(Interface):
+    """ Site root"""
 
 
 class IMemberDatabase(Interface):

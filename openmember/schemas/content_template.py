@@ -16,4 +16,6 @@ class Fields(colander.SequenceSchema):
 
 
 class ContentTemplateSchema(colander.Schema):
-    fields = Fields()
+    title = colander.SchemaNode(colander.String())
+    description = colander.SchemaNode(colander.String())
+    #FIXME: Here? fields = Fields()

@@ -28,9 +28,22 @@ def appmaker(zodb_root):
         from openmember.models.site import SiteRoot
         app_root = SiteRoot()
         zodb_root['app_root'] = app_root
+        app_root['example'] = initial_content()
         import transaction
         transaction.commit()
     return zodb_root['app_root']
+
+def initial_content():
+    from openmember.models.member_database import MemberDatabase
+    from openmember.models.content_template import ContentTemplate
+    from openmember.models.field_template import FieldTemplate
+    obj = MemberDatabase()
+    obj['person'] = person = ContentTemplate()
+    person['first_name'] = FieldTemplate(title = u"First name",
+                                         field_type = u"string_field")
+    
+    #FIXME: Setup admin account etc
+    return obj
 
 def register_fields(config):
     config.include('openmember.models.fields.string_field')

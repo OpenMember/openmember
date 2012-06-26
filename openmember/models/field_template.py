@@ -10,9 +10,12 @@ class FieldTemplate(Folder):
     """ Field information """
     implements(IFieldTemplate)
 
-    def __init__(self):
+    def __init__(self, title=u"", description=u"", field_type=u""):
         self._storage = OOBTree()
         super(FieldTemplate, self).__init__()
+        self.title = title
+        self.description = description
+        self.field_type = field_type
 
     def get_title(self):
         return self._storage.get('title', '')

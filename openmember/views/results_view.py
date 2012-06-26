@@ -16,8 +16,7 @@ class ResultsView(object):
         
             
     @view_config(renderer = 'templates/results.pt')
-    #def view(self):
-    def __call__(self):
+    def render_results_view(self):
         strDisp = ""
         if self.data is not None:
             for field in self.data:
