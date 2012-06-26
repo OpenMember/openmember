@@ -1,5 +1,9 @@
+from deform.exception import ValidationFailure
+from deform.form import Form
 from pyramid.config import Configurator
 from pyramid_zodbconn import get_connection
+from wsgiref.simple_server import make_server
+import colander
 
 
 def main(global_config, **settings):
@@ -7,6 +11,10 @@ def main(global_config, **settings):
     """
     config = Configurator(root_factory=root_factory, settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view('deform', 'deform:static')
+    
+    
+    
     config.include(register_fields)
     config.scan()
     return config.make_wsgi_app()
@@ -26,3 +34,6 @@ def appmaker(zodb_root):
 
 def register_fields(config):
     config.include('openmember.models.fields.string_field')
+    config.include('openmember.models.fields.int_field')
+    config.include('openmember.models.fields.date_field')
+

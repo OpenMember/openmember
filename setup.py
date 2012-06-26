@@ -16,6 +16,7 @@ requires = [
     'repoze.folder',
     'colander',
     'deform',
+    'slugify'
     ]
 
 setup(name='openmember',
