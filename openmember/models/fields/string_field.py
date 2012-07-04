@@ -1,8 +1,9 @@
-import colander
-from zope.interface import Interface
-
 from openmember.models.field_adapter import FieldAdapter
 from openmember.models.interfaces import IFieldAdapter
+from openmember.models.interfaces import IContentTemplate
+from zope.interface import Interface
+import colander
+
 
 
 class StringField(FieldAdapter):
@@ -20,4 +21,4 @@ class StringField(FieldAdapter):
 
 
 def includeme(config):
-    config.registry.registerAdapter(StringField, (Interface,), IFieldAdapter, name = StringField.type_name)
+    config.registry.registerAdapter(StringField, (IContentTemplate,), IFieldAdapter, name = StringField.type_name)

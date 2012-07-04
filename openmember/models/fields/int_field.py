@@ -1,8 +1,9 @@
-import colander
-from zope.interface.interface import Interface
-
 from openmember.models.field_adapter import FieldAdapter
 from openmember.models.interfaces import IFieldAdapter
+from openmember.models.interfaces import IContentTemplate
+from zope.interface.interface import Interface
+import colander
+
 
 class IntField(FieldAdapter):
     title = u"Integer Field"
@@ -17,4 +18,4 @@ class IntField(FieldAdapter):
                                    **kw)
         return node
 def includeme(config):
-        config.registry.registerAdapter(IntField, (Interface,), IFieldAdapter, name = IntField.type_name)
+        config.registry.registerAdapter(IntField, (IContentTemplate,), IFieldAdapter, name = IntField.type_name)

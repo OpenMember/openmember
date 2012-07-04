@@ -14,7 +14,7 @@ class IMemberDatabase(Interface):
 class IMembershipTerm(Interface):
     """ """
     start_date = Attribute("Start date")
-    end_date = Attribute("Start date")
+    end_date = Attribute("End date")
 
 
 class IMemberData(Interface):
@@ -34,7 +34,11 @@ class IMemberData(Interface):
             Must be in dict format and each key must correspond to an actual field.
         """
 
-
+class IMemberTemplate(Interface):
+    
+    """Contains the template to create a Member Schema"""
+    """the data contained within will be used to create a MemberData instance"""
+    
 class IContentTemplate(Interface):
     """ Content type information """
     title = Attribute("Title of this content type")
@@ -67,3 +71,6 @@ class IFieldAdapter(Interface):
 
     def get_node(context, request, name, title = u"", description = u"", **kw):
         """ Return a colander.SchemaNode """
+
+class IGroupingAdapter(Interface):
+    fields = Attribute("List of grouped fields")

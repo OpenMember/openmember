@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="/static/main.css" type="text/css" media="screen" charset="utf-8" />
 </head>
 <body>
-This is the results.pt file
+
 <div tal:content="structure form">Form</div>
 </body>
 </html>

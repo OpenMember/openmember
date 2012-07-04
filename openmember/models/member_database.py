@@ -7,3 +7,4 @@ from openmember.models.interfaces import IMemberDatabase
 class MemberDatabase(Folder):
     implements(IMemberDatabase)
     
+        

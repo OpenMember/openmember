@@ -1,17 +1,17 @@
 from deform.exception import ValidationFailure
 from deform.form import Form
+from openmember.models.content_template import ContentTemplate
 from openmember.models.field_template import FieldTemplate
 from openmember.models.interfaces import IContentTemplate, IFieldAdapter, ISite
-from openmember.models.content_template import ContentTemplate
+from openmember.models.interfaces import IMemberDatabase
 from openmember.schemas.content_template import ContentTemplateSchema
 from openmember.views.base import BaseView
 from pyramid.httpexceptions import HTTPFound
 from pyramid.request import Request
+from pyramid.traversal import find_root
 from pyramid.url import resource_url
 from pyramid.view import view_config
 from slugify import slugify
-
-
 
 
 class ContentTemplateView(BaseView):
@@ -26,10 +26,13 @@ class ContentTemplateView(BaseView):
             
         return choices
         
-    @view_config(name="add_page", context=ISite, renderer = 'templates/edit.pt')
+    @view_config(name="add_page", context=IMemberDatabase, renderer = 'templates/edit.pt')
     def add(self):
-        schema = ContentTemplateSchema()
-        schema = schema.bind(context = self.context, request = self.request, field_types = self.get_field_types() )
+        
+        content_template = self.request.params.get('content_template')
+        root = find_root(self.context)
+        c_t_obj = root[content_template]
+        schema = c_t_obj.get_schema(context = self.context, request = self.request)
         form = Form(schema, buttons=('save',))
         post = self.request.POST
         response = {}
@@ -56,12 +59,12 @@ class ContentTemplateView(BaseView):
         response['form'] = form.render()
         return response
     
-    @view_config(context = IContentTemplate, renderer = 'templates/view.pt')
+#    @view_config(context = IContentTemplate, renderer = 'templates/view.pt')
     def view(self):
         response = {}
         return response
 
-    @view_config(name="edit_page", context=IContentTemplate, renderer = 'templates/edit.pt')
+#    @view_config(name="edit_page", context=IContentTemplate, renderer = 'templates/edit.pt')
     def edit(self):
         schema = ContentTemplateSchema()
         schema = schema.bind(context = self.context, request = self.request, field_types = self.get_field_types())

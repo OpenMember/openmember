@@ -1,16 +1,20 @@
-import colander
-from repoze.folder import Folder
-from zope.interface import implements
 from BTrees.OOBTree import OOBTree
-
 from interfaces import IContentTemplate
+from openmember.models.interfaces import IFieldAdapter
+from repoze.folder import Folder
+from zope.component._api import getAdapter
+from zope.interface import implements
+import colander
+import slugify
+
 
 
 class ContentTemplate(Folder):
     implements(IContentTemplate)    
     title = None
     description = None
-
+    fields = None
+    
     def __init__(self):
         self._storage = OOBTree()
         super(ContentTemplate, self).__init__()
@@ -26,11 +30,20 @@ class ContentTemplate(Folder):
     def set_description(self, value):
         self._storage['description'] = value
     description = property(get_description, set_description)
+    
+    def get_fields(self):
+        return self._storage.get('fields', ())
+    def set_fields(self, value):
+        if not isinstance(value, tuple):
+            value = tuple(value)
+        self._storage['fields'] = value
+    fields = property(get_fields, set_fields)
 
     def get_schema(self, context, request, **kw):
         schema = colander.Schema()  #gets the current schema
-        for fieldname in self.order:
-            schema.add(self[fieldname].get_node(context, request, **kw))    #adds field subnode to the current schema
+        for field in self.get_fields():
+            adapter = getAdapter(self, name = field['field_type'], interface = IFieldAdapter)
+            schema.add(adapter.get_node(context, request, name = slugify(field['title']), title = field['title'], description = field['description'], **kw))    #adds field subnode to the current schema
         schema.bind(context = context, request = request, **kw)
         return schema
 
