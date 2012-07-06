@@ -1,6 +1,6 @@
 from openmember.models.field_adapter import FieldAdapter
 from openmember.models.interfaces import IFieldAdapter
-from openmember.models.interfaces import IContentTemplate
+from openmember.models.interfaces import IContentTemplate, IFieldTemplate
 from zope.interface import Interface
 import colander
 
@@ -21,4 +21,4 @@ class StringField(FieldAdapter):
 
 
 def includeme(config):
-    config.registry.registerAdapter(StringField, (IContentTemplate,), IFieldAdapter, name = StringField.type_name)
+    config.registry.registerAdapter(StringField, (IFieldTemplate,), IFieldAdapter, name = StringField.type_name)

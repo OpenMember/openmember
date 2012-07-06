@@ -1,9 +1,9 @@
+from BTrees.OOBTree import OOBTree
+from openmember.models.interfaces import IFieldAdapter, IFieldTemplate
 from repoze.folder import Folder
 from zope.interface import implements
-from BTrees.OOBTree import OOBTree
+import pdb
 
-from openmember.models.interfaces import IFieldTemplate
-from openmember.models.interfaces import IFieldAdapter
 
 
 class FieldTemplate(Folder):
@@ -38,7 +38,7 @@ class FieldTemplate(Folder):
     def get_node(self, context, request, name = None, **kw):
         if name is None:
             name = self.__name__
-        fa = request.registry.getAdapter(context, IFieldAdapter, name = self.field_type)
+        fa = request.registry.getAdapter(self, IFieldAdapter, name = self.field_type)
         return fa.get_node(context, request, name, title = self.title,
                            description = self.description, **kw)
 

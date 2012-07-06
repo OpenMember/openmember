@@ -41,9 +41,8 @@ class ContentTemplate(Folder):
 
     def get_schema(self, context, request, **kw):
         schema = colander.Schema()  #gets the current schema
-        for field in self.get_fields():
-            adapter = getAdapter(self, name = field['field_type'], interface = IFieldAdapter)
-            schema.add(adapter.get_node(context, request, name = slugify(field['title']), title = field['title'], description = field['description'], **kw))    #adds field subnode to the current schema
+        for fieldname in self.order:
+            schema.add(self[fieldname].get_node(context, request, **kw))    #adds field subnode to the current schema
         schema.bind(context = context, request = request, **kw)
         return schema
 

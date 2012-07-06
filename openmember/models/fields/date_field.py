@@ -1,6 +1,6 @@
 from openmember.models.field_adapter import FieldAdapter
 from openmember.models.interfaces import IFieldAdapter
-from openmember.models.interfaces import IContentTemplate
+from openmember.models.interfaces import IFieldTemplate
 from zope.interface.interface import Interface
 import colander
 
@@ -11,7 +11,7 @@ class DateField(FieldAdapter):
     type_name = u"date_field"
     
     def get_node(self, context, request, name, title=u"", description = u"", **kw):
-        node = colander.SchemaNode(colander.Int(), 
+        node = colander.SchemaNode(colander.Date(), 
                                    name = name,
                                    title=title,
                                    description=description,
@@ -19,4 +19,4 @@ class DateField(FieldAdapter):
         return node
     
 def includeme(config):
-        config.registry.registerAdapter(DateField, (IContentTemplate,), IFieldAdapter, name = DateField.type_name)
+        config.registry.registerAdapter(DateField, (IFieldTemplate,), IFieldAdapter, name = DateField.type_name)

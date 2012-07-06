@@ -1,20 +1,22 @@
 from deform.exception import ValidationFailure
 from deform.form import Form
-from openmember.models.field_template import FieldTemplate
-from openmember.models.interfaces import IContentTemplate, IFieldAdapter, ISite
 from openmember.models.content_template import ContentTemplate
-from openmember.schemas.content_template import ContentTemplateSchema
+from openmember.models.field_template import FieldTemplate
+from openmember.models.interfaces import IContentTemplate, IFieldAdapter, ISite, IFieldTemplate
+from openmember.schemas.content_template import ContentTemplateSchema, \
+    FieldTemplateSchema
 from openmember.views.base import BaseView
 from pyramid.httpexceptions import HTTPFound
 from pyramid.request import Request
 from pyramid.url import resource_url
 from pyramid.view import view_config
 from slugify import slugify
+import pdb
 
 
 
 
-class ContentTemplateView(BaseView):
+class ContentTemplateViews(BaseView):
     
     
     def get_field_types(self):
@@ -29,7 +31,7 @@ class ContentTemplateView(BaseView):
     @view_config(name="add_page", context=ISite, renderer = 'templates/edit.pt')
     def add(self):
         schema = ContentTemplateSchema()
-        schema = schema.bind(context = self.context, request = self.request, field_types = self.get_field_types() )
+        schema = schema.bind(context = self.context, request = self.request)
         form = Form(schema, buttons=('save',))
         post = self.request.POST
         response = {}
@@ -56,11 +58,45 @@ class ContentTemplateView(BaseView):
         response['form'] = form.render()
         return response
     
-    @view_config(context = IContentTemplate, renderer = 'templates/view.pt')
+    @view_config(context = IContentTemplate, renderer = 'templates/content_template.pt')
     def view(self):
+        response = {'context':self.context}
+        return response
+    
+    @view_config(name="add_field", context=IContentTemplate, renderer = 'templates/edit.pt')
+    def add_field(self):
+        schema = FieldTemplateSchema()
+        schema = schema.bind(context = self.context, request = self.request, field_types = self.get_field_types() )
+        form = Form(schema, buttons=('save',))
+        post = self.request.POST
         response = {}
+        response['form_resources'] = form.get_widget_resources(None)
+        if 'save' in post:
+            controls = post.items()
+            try:
+                appstruct = form.validate(controls)
+            except ValidationFailure, e:
+                response['form'] = e.render()
+                return response
+            
+            obj = FieldTemplate()
+            obj.title = appstruct['title']
+            obj.description = appstruct['description']
+            obj.field_type = appstruct['field_type']
+            #FIXME: Make adaptable to same titles
+            self.context[slugify(obj.title)] = obj
+            url = resource_url(self.context, self.request)
+            return HTTPFound(location=url)
+        
+        response['form'] = form.render()
         return response
 
+    @view_config(name="delete_field", context= IFieldTemplate)
+    def delete_field(self):
+        del self.context.__parent__[self.context.__name__]
+        url = resource_url(self.context.__parent__, self.request)
+        return HTTPFound(location=url)
+        
     @view_config(name="edit_page", context=IContentTemplate, renderer = 'templates/edit.pt')
     def edit(self):
         schema = ContentTemplateSchema()

@@ -3,7 +3,8 @@ from deform.form import Form
 from openmember.models.content_template import ContentTemplate
 from openmember.models.field_template import FieldTemplate
 from openmember.models.interfaces import IContentTemplate, IFieldAdapter, ISite
-from openmember.models.interfaces import IMemberDatabase
+from openmember.models.interfaces import IMemberDatabase, IMemberData
+from openmember.models.member_data import MemberData
 from openmember.schemas.content_template import ContentTemplateSchema
 from openmember.views.base import BaseView
 from pyramid.httpexceptions import HTTPFound
@@ -29,9 +30,9 @@ class ContentTemplateView(BaseView):
     @view_config(name="add_page", context=IMemberDatabase, renderer = 'templates/edit.pt')
     def add(self):
         
-        content_template = self.request.params.get('content_template')
+        content_type = self.request.params.get('content_type')
         root = find_root(self.context)
-        c_t_obj = root[content_template]
+        c_t_obj = root[content_type]
         schema = c_t_obj.get_schema(context = self.context, request = self.request)
         form = Form(schema, buttons=('save',))
         post = self.request.POST
@@ -45,12 +46,10 @@ class ContentTemplateView(BaseView):
                 response['form'] = e.render()
                 return response
             
-            obj = ContentTemplate()
-            obj.title = appstruct['title']
-            obj.description = appstruct['description']
-            obj.fields = appstruct['fields']
+            obj = MemberData(content_type=content_type, values = appstruct)
+
             #FIXME: Make adaptable to same titles
-            self.context[slugify(obj.title)] = obj
+            self.context["%s" % len(self.context)] = obj
             
             url = resource_url(obj, self.request)
             
@@ -59,9 +58,11 @@ class ContentTemplateView(BaseView):
         response['form'] = form.render()
         return response
     
-#    @view_config(context = IContentTemplate, renderer = 'templates/view.pt')
+    @view_config(context = IMemberData, renderer = 'templates/member_data.pt')
     def view(self):
-        response = {}
+        name_content = self.context.content_type
+        content_template = find_root(self.context)[name_content]
+        response = {'context':self.context,'content_template':content_template}
         return response
 
 #    @view_config(name="edit_page", context=IContentTemplate, renderer = 'templates/edit.pt')
